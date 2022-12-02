@@ -1,8 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/time.h>
 
 int main() {
+  struct timeval st, et;
+
+
   FILE * fp = fopen ("input.txt", "r");
 
   char ch;
@@ -12,6 +16,8 @@ int main() {
   int max1 = 0;
   int max2 = 0;
   int max3 = 0;
+
+  gettimeofday(&st,NULL);
 
   int currentElfCalories = 0;
   while((ch = getc(fp)) != EOF)
@@ -42,7 +48,11 @@ int main() {
       buffer[pos] = ch;
       pos++;
     }
-  } 
+  }
+
+  gettimeofday(&et,NULL);
+  int elapsed = ((et.tv_sec - st.tv_sec) * 1000000) + (et.tv_usec - st.tv_usec);
+  printf("%d micro seconds\n",elapsed);
 
   printf("%d", max1 + max2 + max3);
   
