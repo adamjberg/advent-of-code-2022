@@ -1,6 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
 #include <sys/time.h>
 
 struct String {
@@ -14,22 +18,22 @@ int main() {
 
   gettimeofday(&st,NULL);
 
-  FILE * fp = fopen ("input.txt", "r");
+  int fd = open("input.txt", O_RDONLY);
 
-  String contents;
+  struct stat statbuf;
+  int err = fstat(fd, &statbuf);
 
-  contents.length = 0;
-  contents.size = 10375;
-  contents.data = malloc(contents.size);
-
-  int num_read = fread(contents.data, 1, contents.size - contents.length, fp);
-  contents.length = num_read;
-
-  printf("%d\n", contents.length);
+  char *ptr = mmap(NULL,statbuf.st_size,
+            PROT_READ,MAP_SHARED,
+            fd,0);
 
   gettimeofday(&et,NULL);
   int elapsed = ((et.tv_sec - st.tv_sec) * 1000000) + (et.tv_usec - st.tv_usec);
   printf("Read: %d micro seconds\n", elapsed);
+
+  int total_elapsed = elapsed;
+
+  gettimeofday(&st,NULL);
 
   char buffer[6];
   int pos = 0;
@@ -39,9 +43,9 @@ int main() {
   int max3 = 0;
 
   int currentElfCalories = 0;
-  for (int i = 0; i < contents.length; i++)
+  for (int i = 0; i < statbuf.st_size; i++)
   {
-    char ch = contents.data[i];
+    char ch = ptr[i];
 
     if (ch == '\n') {
       if (pos != 0) {
@@ -74,7 +78,13 @@ int main() {
   elapsed = ((et.tv_sec - st.tv_sec) * 1000000) + (et.tv_usec - st.tv_usec);
   printf("Part 2: %d micro seconds\n",elapsed);
 
+  total_elapsed += elapsed;
+  printf("Total: %d micro seconds\n", total_elapsed);
+
   printf("%d", max1 + max2 + max3);
+
+  munmap(ptr, statbuf.st_size);
+  close(fd);
   
   return 0;
 }
