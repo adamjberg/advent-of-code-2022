@@ -25,6 +25,8 @@ int main() {
   int num_read = fread(contents.data, 1, contents.size - contents.length, fp);
   contents.length = num_read;
 
+  printf("%d\n", contents.length);
+
   gettimeofday(&et,NULL);
   int elapsed = ((et.tv_sec - st.tv_sec) * 1000000) + (et.tv_usec - st.tv_usec);
   printf("Read: %d micro seconds\n", elapsed);
@@ -43,9 +45,8 @@ int main() {
 
     if (ch == '\n') {
       if (pos != 0) {
-        int calories;
-        sscanf(buffer, "%d", &calories);
-        memset(buffer, 0, sizeof(buffer));
+        buffer[pos] = 0;
+        int calories = atoi(buffer);
 
         currentElfCalories += calories;
 
