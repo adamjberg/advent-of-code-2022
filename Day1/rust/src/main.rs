@@ -11,6 +11,11 @@ fn main() {
   let mut contents = String::new();
   file.read_to_string(&mut contents);
 
+  let read_duration = SystemTime::now()
+    .duration_since(start).unwrap();
+
+  println!("Read: {:?}", read_duration);
+
   let mut input: Vec<usize> = contents
       .split("\n\n")
       .map(|b|
