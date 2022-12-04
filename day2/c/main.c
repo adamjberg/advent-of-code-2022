@@ -50,26 +50,37 @@ int partTwo(String *contents) {
     char opponent_char = contents->data[i];
     char my_char = contents->data[i + 2];
 
-    if (my_char == 'Y') {
+    int opponent_move_val = opponent_char - 'A' + 1;
+    int my_move_val = 0;
+
+    if (my_char == 'X') {
+      if (opponent_char == 'A') {
+        score += 3;
+      } else if (opponent_char == 'B') {
+        score += 1;
+      } else {
+        score += 2;
+      }
+    } else if (my_char == 'Y') {
       score += 3;
+
+      if (opponent_char == 'A') {
+        score += 1;
+      } else if (opponent_char == 'B') {
+        score += 2;
+      } else {
+        score += 3;
+      }
     } else if (my_char == 'Z') {
       score += 6;
-    }
 
-    int opponent_move_val = opponent_char - 'A' + 1;
-    int my_move_val = my_char - 'X' + 1;
-
-    if (opponent_char == 'A') {
-      // Y
-      score += 2;
-    }
-    if (opponent_char == 'B') {
-      // Z
-      score += 3;
-    }
-    if (opponent_char == 'C') {
-      // X
-      score += 1;
+      if (opponent_char == 'A') {
+        score += 2;
+      } else if (opponent_char == 'B') {
+        score += 3;
+      } else {
+        score += 1;
+      }
     }
   }
 
