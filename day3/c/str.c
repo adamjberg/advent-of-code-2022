@@ -1,4 +1,5 @@
 #include "str.h"
+#include <stdio.h>
 #include <stdlib.h>
 
 str_t *str_new(size_t capacity)
@@ -21,6 +22,10 @@ str_t *str_from_c_str(const char *c_str)
   str->capacity = len;
   str->data = malloc(len);
 
+  for (int i = 0; i < len; i++) {
+    str->data[i] = c_str[i];
+  }
+
   return str;
 }
 
@@ -29,6 +34,11 @@ void str_clear(str_t *str) {
 }
 
 void str_append_char(str_t *str, char c) {
+  if (!str) {
+    printf("NULL String\n");
+    return;
+  }
+  
   if (str->length >= str->capacity - 1)
   {
     return;

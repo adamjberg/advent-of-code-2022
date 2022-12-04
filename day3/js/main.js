@@ -27,7 +27,7 @@ const day3 = () => {
   }
   console.log(score);
 };
-day3();
+// day3();
 
 const day3Part2 = () => {
   const data = fs.readFileSync("./input.txt", "utf-8");
@@ -58,4 +58,4 @@ const day3Part2 = () => {
   console.log(score);
 };
 
-// day3Part2();
+day3Part2();

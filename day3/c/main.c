@@ -11,14 +11,8 @@
 #include <stdbool.h>
 #include "str.h"
 
-int get_dupe_priority(str_t *str)
-{
-  bool char_map[53] = {};
-  for (int i = 0; i < str->length; i++)
-  {
-    char c = str->data[i];
-
-    int priority;
+int get_priority_for_char(char c) {
+  int priority;
     if (c <= 'z' && c >= 'a')
     {
       priority = c - 'a' + 1;
@@ -27,6 +21,17 @@ int get_dupe_priority(str_t *str)
     {
       priority = c - 'A' + 27;
     }
+    return priority;
+}
+
+int get_dupe_priority(str_t *str)
+{
+  bool char_map[53] = {};
+  for (int i = 0; i < str->length; i++)
+  {
+    char c = str->data[i];
+
+    int priority = get_priority_for_char(c);
 
     int half_length = str->length / 2;
 
@@ -89,27 +94,55 @@ void part_two(const char *ptr, int length)
 
   int priority_sum = 0;
 
-  for (int i = 0; i < length; i++)
+  for (int char_index = 0; char_index < length; char_index++)
   {
-    char c = ptr[i];
+    char c = ptr[char_index];
 
     if (c == '\n')
     {
-      elf_index++;
-      if (elf_index >= 3)
+      if (elf_index >= 2)
       {
         for (int i = 0; i < 3; i++)
         {
-          elf_lines[i]->length = 0;
+          for (int j = 0; j < elf_lines[i]->length; j++) {
+            char c = str_char_at(elf_lines[i], j);
+            int priority = get_priority_for_char(c);
+            char_map[i][priority] = true;
+          }
+        }
+
+        str_t *all_characters = str_from_c_str("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWWYZ");
+        for (int i = 0; i < all_characters->length; i++) {
+          char c = str_char_at(all_characters, i);
+          int priority = get_priority_for_char(c);
+          bool found = true;
+          for (int j = 0; j < 3; j++)
+          {
+            if (!char_map[j][priority]) {
+              found = false;
+            }
+          }
+
+          if (found) {
+            priority_sum += priority;
+          }
+        }
+        str_free(all_characters);
+
+        for (int i = 0; i < 3; i++)
+        {
+          str_clear(elf_lines[i]);
+          memset(char_map[i], 0, 53);
         }
 
         elf_index = 0;
+      } else {
+        elf_index++;
       }
     }
     else
     {
-      elf_lines[elf_index]->data[elf_lines[elf_index]->length] = c;
-      elf_lines[elf_index]->length++;
+      str_append_char(elf_lines[elf_index], c);
     }
   }
 
@@ -117,6 +150,8 @@ void part_two(const char *ptr, int length)
   {
     str_free(elf_lines[i]);
   }
+
+  printf("%d\n", priority_sum);
 }
 
 int main()
@@ -132,7 +167,7 @@ int main()
                    PROT_READ, MAP_SHARED,
                    fd, 0);
 
-  part_one(ptr, length);
+  part_two(ptr, length);
 
   munmap(ptr, statbuf.st_size);
   close(fd);
