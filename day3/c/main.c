@@ -111,7 +111,7 @@ void part_two(const char *ptr, int length)
           }
         }
 
-        str_t *all_characters = str_from_c_str("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWWYZ");
+        str_t *all_characters = str_from_c_str("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWYZ");
         for (int i = 0; i < all_characters->length; i++) {
           char c = str_char_at(all_characters, i);
           int priority = get_priority_for_char(c);
