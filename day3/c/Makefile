@@ -1,2 +1,2 @@
-main: main.c
-	clang -O3 main.c
+main: main.c str.c
+	clang -O3 main.c str.c

@@ -9,15 +9,9 @@
 #include <unistd.h>
 #include <sys/time.h>
 #include <stdbool.h>
+#include "str.h"
 
-struct String
-{
-  char *data;
-  int length;
-  int size;
-} typedef String;
-
-int get_dupe_priority(String *str)
+int get_dupe_priority(str_t *str)
 {
   bool char_map[53] = {};
   for (int i = 0; i < str->length; i++)
@@ -54,12 +48,9 @@ int get_dupe_priority(String *str)
   return 0;
 }
 
-void part_one(const char *ptr, int length) {
-  String line;
-
-  line.length = 0;
-  line.size = 50;
-  line.data = malloc(line.size);
+void part_one(const char *ptr, int length)
+{
+  str_t *line = str_new(50);
 
   int total_priority = 0;
 
@@ -69,18 +60,63 @@ void part_one(const char *ptr, int length) {
 
     if (c == '\n')
     {
-      line.data[line.length] = 0;
-      int priority = get_dupe_priority(&line);
+      int priority = get_dupe_priority(line);
       total_priority += priority;
-      line.length = 0;
+      str_clear(line);
     }
     else
     {
-      line.data[line.length] = c;
-      line.length++;
+      str_append_char(line, c);
     }
   }
+
+  free(line);
+
   printf("%d\n", total_priority);
+}
+
+void part_two(const char *ptr, int length)
+{
+  int elf_index = 0;
+
+  str_t *elf_lines[3];
+  bool char_map[3][53] = {};
+
+  for (int i = 0; i < 3; i++)
+  {
+    elf_lines[i] = str_new(50);
+  }
+
+  int priority_sum = 0;
+
+  for (int i = 0; i < length; i++)
+  {
+    char c = ptr[i];
+
+    if (c == '\n')
+    {
+      elf_index++;
+      if (elf_index >= 3)
+      {
+        for (int i = 0; i < 3; i++)
+        {
+          elf_lines[i]->length = 0;
+        }
+
+        elf_index = 0;
+      }
+    }
+    else
+    {
+      elf_lines[elf_index]->data[elf_lines[elf_index]->length] = c;
+      elf_lines[elf_index]->length++;
+    }
+  }
+
+  for (int i = 0; i < 3; i++)
+  {
+    str_free(elf_lines[i]);
+  }
 }
 
 int main()
