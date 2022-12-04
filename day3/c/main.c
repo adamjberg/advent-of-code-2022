@@ -1,3 +1,5 @@
+// https://github.com/stebucko360/adventOfCode2022/blob/main/day3.js
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -52,19 +54,7 @@ int get_dupe_priority(String *str)
   return 0;
 }
 
-int main()
-{
-  int fd = open("input.txt", O_RDONLY);
-
-  struct stat statbuf;
-  int err = fstat(fd, &statbuf);
-
-  int length = statbuf.st_size;
-
-  char *ptr = mmap(NULL, length,
-                   PROT_READ, MAP_SHARED,
-                   fd, 0);
-
+void part_one(const char *ptr, int length) {
   String line;
 
   line.length = 0;
@@ -90,9 +80,24 @@ int main()
       line.length++;
     }
   }
+  printf("%d\n", total_priority);
+}
+
+int main()
+{
+  int fd = open("input.txt", O_RDONLY);
+
+  struct stat statbuf;
+  int err = fstat(fd, &statbuf);
+
+  int length = statbuf.st_size;
+
+  char *ptr = mmap(NULL, length,
+                   PROT_READ, MAP_SHARED,
+                   fd, 0);
+
+  part_one(ptr, length);
 
   munmap(ptr, statbuf.st_size);
   close(fd);
-
-  printf("%d\n", total_priority);
 }
