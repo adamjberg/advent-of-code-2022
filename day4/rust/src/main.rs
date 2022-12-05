@@ -22,9 +22,13 @@ fn main() {
             }
 
             if numbers.len() == 4 {
-                if numbers[0] <= numbers[2] && numbers[1] >= numbers[3] {
+                if numbers[0] >= numbers[2] && numbers[0] <= numbers[3] {
                     count += 1;
-                } else if numbers[2] <= numbers[0] && numbers[3] >= numbers[1] {
+                } else if numbers[1] >= numbers[2] && numbers[1] <= numbers[3] {
+                    count += 1;
+                } else if numbers[2] <= numbers[1] && numbers[2] >= numbers[0] {
+                    count += 1;
+                } else if numbers[3] <= numbers[1] && numbers[3] >= numbers[0] {
                     count += 1;
                 }
 
